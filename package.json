@@ -1,0 +1,16 @@
+{
+  "name": "dataproject",
+  "version": "1.0.0",
+  "description": "fac week5 stop, go, continue votes visualization",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "ARCJ",
+  "license": "ISC",
+  "dependencies": {
+    "nodemon": "^1.3.7",
+    "twitter": "^2.5.1"
+  }
+}
