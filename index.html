@@ -2,12 +2,11 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>D3: Adding values and elements to a chart</title>
+		<title>D3: ARC-J</title>
       <script type="text/javascript" src="/d3/d3.v3.min.js"></script>
 		<link rel="stylesheet" href="/css/bootstrap.min.css">
 		<link rel="stylesheet" href="/css/style2.css">
-		<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro' rel='stylesheet' type='text/css'>
-		</style>
+		<link href='http://fonts.googleapis.com/css?family=Poiret+One' rel='stylesheet' type='text/css'>
 	</head>
 	<body>
 	
@@ -24,7 +23,7 @@
 	<div class="col-md-6 col-md-offset-3">
 		<div id="graph"></div>
 		<div id="textBox">
-			<div class="textuality" ><h1 id="voteNum"></h1><img src="/assets/twitter-48-black.png"></div>
+			<div class="textuality"><img src="/assets/twitter-48-black.png"><h1 id="voteNum"></h1></div>
 			<h2 class="textuality" id="voteText"></h2>
 			</div>
 		</div>
@@ -198,7 +197,7 @@ function boxReset() {
 		.select("#voteNum")
 		.transition()
 		.duration(500)
-		.text("v");					
+		.text("");					
 		
 	d3.select("#voteText")
 		.transition()
@@ -333,8 +332,7 @@ d3.selectAll(".clickables")
 			d3.select("#textBox")
 						.select("#voteNum")
 						.transition()
-						.duration(500)
-						.text("v");					
+						.duration(500)					
 						
 					d3.select("#voteText")
 						.transition()
