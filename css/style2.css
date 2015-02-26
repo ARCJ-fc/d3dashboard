@@ -1,0 +1,122 @@
+body {
+    font-family: 'Source Sans Pro', sans-serif;
+}
+
+.btn-toolbar {
+       /* position: absolute;
+        left: 3px;
+        top: 0px;
+        margin-left: 15px;*/
+        width: auto;
+        display:inline-block;
+        margin-left: 0px;
+}
+#votebox {
+        float: right;
+}
+
+.textuality {
+    display: inline-block;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    width: 15%;
+}
+
+#voteNum {
+/*    border-color: black;
+    border-style: solid;
+    border-left: 2px;
+    border-bottom: 2px;*/
+    border-radius: 5px;
+    margin-bottom: 0;
+    vertical-align: bottom;
+    text-align: center;
+    display:inline-block;
+}
+
+#voteText {
+    text-align: center;
+    width: 84%;
+}
+
+#textBox {
+    border: 2px;
+    /*border-style: solid;
+    border-width: 2px;*/
+    border-color: black;
+    border-radius: 10px;
+    background-color: hsla(84, 0%, 95%, 1)
+}
+
+#graph {
+        padding: 0px 23px 0px 23px;
+        margin-top:23px;
+        margin-bottom: 23px;
+}
+
+.btn-toolbar>button.buttons {
+        margin-left: 0px;
+        width: 20px;
+        height: 20px;
+        border-style: solid;
+        border-radius:2px;
+}
+.btn-toolbar>button.buttons:hover {
+        background-color: orange;
+        border-color: orange;
+}
+#button1 {
+        background-color: rgb(255,84,104);
+        border-color: rgb(255,84,104);
+}
+#button2 {
+        background-color: rgb(77,250,144);
+        border-color: rgb(77,250,144);
+}
+#button3 {
+        background-color: rgb(50,50,200);
+        border-color: rgb(50,50,200);
+}
+
+h2#headme {
+        display: inline-block;
+}
+h2#headme:hover {
+        color: orange;
+}
+
+#timerSVG>rect:hover {
+    fill: orange;
+}
+
+.hyphen {
+    color: rgb(230, 230, 230);
+}
+.hyphenStop {
+    color: rgb(255,84,104);
+}
+.hyphenGo {
+    color: rgb(77,250,144);
+}
+.hyphenContinue {
+    color: rgb(50,50,200);
+}
+
+#timerDiv {
+    right: 0;
+}
+
+#timerSVG {
+    margin-top: 20px;
+    position: absolute;
+    right: 0;
+    margin-right: 15px;
+}
+
+
+/*
+button {
+        position: absolute;
+        left: 0;
+        top: 0;
+}*/
