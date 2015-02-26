@@ -44,7 +44,6 @@ function retweetVote (input) {
 		chocArr = postWall.chocolateArray,
 		cakeArr = postWall.cakeArray,
 		cheeseArr = postWall.cheeseArray;
-		regexFormatter(newTwText);
 
 	if (newTwText.search('chocolate') !== -1) {
 		var l = chocArr.length;
