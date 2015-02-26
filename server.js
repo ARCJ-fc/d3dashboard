@@ -16,12 +16,11 @@ var http = require('http'),
 
 // creating twitter stream \\
 
-client.keys.stream('statuses/filter', {track: '#chocolate'}, function (stream) {
-	stream.on('data', function(tweet) { 
-	console.log(tweet.text);
-	})
+client.keys.stream('statuses/filter', {track: 'chocolate, cake, cheese'}, function (stream) {
+	stream.on('data', tweetChecker); 
+
 	stream.on('error', function(error) {
-		console.log(error);
+		// console.log(error);
 	});
 });
 
@@ -41,32 +40,45 @@ function tweetChecker (tweet, callback) {
 // loop over existing array to update retweet info \\
 
 function retweetVote (input) {
-	var foodArray = [];
-	if (input.text.toLowerCase().search('chocolate') !== -1) {
-    	// foodArray = postWall.chocolateArray;
-    	foodArray.push('choco');
-		console.log(postWall.chocolateArray);
-    } // else if (input.text.toLowerCase().search('cake') !== -1) {
-    // 	foodArray = postWall.cakeArray;
-    // 	console.log('cake');
-    // } else if (input.text.toLowerCase().search('cheese') !== -1) {
-    // 	foodArray = postWall.cheeseArray;
-    // 	console.log('cheese');
-    // };
-    // for (var i = 0; i < foodArray.length; i += 1) {
-    // 	if(input.text.toLowerCase() === foodArray[i].text.toLowerCase()) {
-    // 		foodArray[i].retweetCount += 1;
-    // 		foodArray[i].voters.push(voterName);
-    // 		console.log(postWall.foodArray);
-    // 	}
-    // }
+	var newTwText = input.text.toLowerCase(),
+		chocArr = postWall.chocolateArray,
+		cakeArr = postWall.cakeArray,
+		cheeseArr = postWall.cheeseArray;
+		regexFormatter(newTwText);
+
+	if (newTwText.search('chocolate') !== -1) {
+		var l = chocArr.length;
+		console.log('choc found');
+	    for (var i = 0; i < l; i += 1) {
+	    	if(newTwText.search(chocArr[i].textBody.toLowerCase()) !== -1) {
+	    		console.log('choc match');
+	    		chocArr[i].retweetCount += 1;	    		
+	    		chocArr[i].voters.push(voterName);
+	    		console.log(chocArr);
+	    	}
+	    }
+    } else if (newTwText.search('cake') !== -1) {
+		var l = cakeArr.length;
+	    for (var i = 0; i < l; i += 1) {
+	    	if(newTwText.search(cakeArr[i].textBody.toLowerCase()) !== -1) {
+	    		console.log('cake match');
+	    		cakeArr[i].retweetCount += 1;
+	    		cakeArr[i].voters.push(voterName);
+	    		console.log(cakeArr);
+	    	}
+	    }
+    } else if (newTwText.search('cheese') !== -1) {
+    	var l = cheeseArr.length;
+	    for (var i = 0; i < l; i += 1) {
+	    	if(newTwText.search(cheeseArr[i].textBody.toLowerCase()) !== -1) {
+	    		console.log('cheese match');
+	    		cheeseArr[i].retweetCount += 1;
+	    		cheeseArr[i].voters.push(voterName);
+	    		console.log(cheeseArr);
+	    	}
+    	};
+    }
 } 
-// apply regex to format text of tweet \\
-// function regexFormatter (tweetText) {
-// 	var regex = /\S*#(?:\[[^\]]+\]|\S+)/g;
-// 	var formatter = regex.exec(tweetText);
-// 	var hashtag = formatter[0];
-// };
 
 
 // if tweet is new suggestion, create new object to be stored in array with relevant hashtag \\
@@ -107,23 +119,25 @@ function arrayPusher (input) {
 	// console.log(postWall.cheeseArray);
 }
 
-// // if retweet, check against IDs of existing tweets & update retweet count of match \\
-// function retweetVote (tweet) {
-	
-// }
 
-
+// setup server to respond to requests \\
 
 function requestHandler (request, response) {
-	fs.readFile(__dirname + '/' + 'index.html', function(err, data) {
-		if(!err) {
-			response.writeHead(200, {'Content-Type': 'text/html'});
-			response.end('<h1>server serving</h1>')
-		} else {
-			response.writeHead(404, {'Content-Type': 'text/html'});
-			response.end('<h1>404 page not found</h1>');
-		}
-	});
+	if (request.url === '/tweets') {
+		var ting = JSON.stringify(postWall);
+		response.end(ting);
+	} else {
+		fs.readFile(__dirname + '/' + 'index.html', function(err, data) {
+			if(!err) {
+				response.writeHead(200, {'Content-Type': 'text/html'});
+				response.end(data);
+				// response.end(postWall);
+			} else {
+				response.writeHead(404, {'Content-Type': 'text/html'});
+				response.end('<h1>404 page not found</h1>');
+			}
+		});
+	}
 }
 
 
@@ -132,22 +146,10 @@ function requestHandler (request, response) {
 http.createServer(requestHandler).listen(5000);
 console.log('Server running');
 
-
-
-
-
-		// if(tweet.text.search('chocolate') !== -1) {
-		// 	if(tweet.retweeted_status) {
-		// 		var chocTweet = {
-		// 			'text': tweet.text,
-		// 			'tweeter name': tweet.user.screen_name,
-		// 			'retweet count': tweet.retweeted_status.retweet_count
-		// 		} 			}
-		// 	console.log(chocTweet);
-		// 	// tweets.chocArray.p
-		// ush(chocTweet);
-		// } else if (tweet.text.search('cake') !== -1) {
-		// 	cakeArray.push(tweet);
-		// } else if (tweet.text.search('cheese') !== -1) {
-		// 	cheeseArray.push(tweet.text, tweet.source);
-		// }
+// apply regex to format text of tweet \\
+// function regexFormatter (tweetText) {
+// 	var regex = /\S*#(?:\[[^\]]+\]|\S+)/g;
+// 	var formatter = regex.exec(tweetText);
+// 	console.log(formatter);
+// 	var hashtag = formatter[0];
+// };
