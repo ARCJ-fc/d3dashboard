@@ -9,7 +9,7 @@ var stopArray = [],
 
 function fetchData(){
     function setInterval($.ajax({
-        url: "http://localhost:8000/stop",
+        url: "http://localhost:8000/tweets",
         success: function(data) {
             var sl = data.stop.length; //the stop array received from the server
             var gl = data.go.length;
@@ -34,6 +34,7 @@ function fetchData(){
         
                 continueArray[i].count = data.continue[i].count;
             }
+            d3func(data);
         }
     }), 3000)
 }
