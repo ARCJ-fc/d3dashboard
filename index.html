@@ -3,196 +3,439 @@
 	<head>
 		<meta charset="utf-8">
 		<title>D3: Adding values and elements to a chart</title>
-      <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-		<link rel="stylesheet" href="/css/style.css">
+      <script type="text/javascript" src="/d3/d3.v3.min.js"></script>
+		<link rel="stylesheet" href="/css/bootstrap.min.css">
+		<link rel="stylesheet" href="/css/style2.css">
+		<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro' rel='stylesheet' type='text/css'>
 		</style>
 	</head>
 	<body>
-	<button id="addval">clik</button>
-	<div id="tooltip" class="hidden">
-        <p><strong>Important Label Heading</strong></p>
-        <p><span id="value">100</span>%</p>
+	
+	<div class="col-md-4">
+	<div class="btn-toolbar" id="btnholder" role="toolbar" aria-label="...">
+	  <button class="btn-group buttons clickables" id="button1" role="group" aria-label="..."></button>
+	  <button class="btn-group buttons clickables" id="button2" role="group" aria-label="..."></button>
+	  <button class="btn-group buttons clickables" id="button3" role="group" aria-label="..."></button>
 	</div>
+	
+		<h2 class="clickables" id="headme"><g class="">#</g>stop<g class="">-</g>go<g class="">-</g>continue</h2>
+	</div>
+	<div class="col-md-8"><div id="timerDiv"></div></div>
+	<div class="col-md-6 col-md-offset-3">
+		<div id="graph"></div>
+		<div id="textBox">
+			<div class="textuality" ><h1 id="voteNum"></h1><img src="/assets/twitter-48-black.png"></div>
+			<h2 class="textuality" id="voteText"></h2>
+			</div>
+		</div>
 		<script type="text/javascript">
-			//Width and height
-			var w = 600;
-			var h = 250;
+
+			var stopArray = 	[ 	{"text": "this is a random tweet",
+									"rT": 4},
+									{"text": "uh oh not another one!",
+									"rT": 5},
+									{"text": "every tweet is a fish",
+									"rT": 6},
+									{"text": "every fish is a tweet",
+									"rT": 7},
+									{"text": "twitter",
+									"rT": 9},
+									{"text": "twitttter",
+									"rT": 12} ],
+
+				goArray 		= [ {"text": "hello world",
+									"rT": 20},
+									{"text": "lorem ipsum dolor",
+									"rT": 12},
+									{"text": "blah blah blah",
+									"rT": 6},
+									{"text": "bieber fever",
+									"rT": 8}
+											 ],
+
+				continueArray 	= [ {"text": "fever fever",
+									"rT": 4},
+									{"text": "never gonna give you up",
+									"rT": 5},
+									{"text": "m",
+									"rT": 6},
+									{"text": "n",
+									"rT": 7},
+									{"text": "o",
+									"rT": 9},
+									{"text": "p",
+									"rT": 12} ],
+
+				tempArray = 	[ 	{"text": "",
+									"rT": 0},
+									{"text": " ",
+									"rT": 0},
+									{"text": "  ",
+									"rT": 0},
+									{"text": "   ",
+									"rT": 0},
+									{"text": "    ",
+									"rT": 0},
+									{"text": "     ",
+									"rT": 0} ];
+
+			var w = 600,
+				h = 350,
+				h2 = 400,
+				w3 = 800,
+				h3 = 80,
+				timer = 10,
+				padding = 20,
+				that = "headme",
+				gClass = "hyphen";
 			
-			var dataset = [ 5, 10, 13, 19, 21, 25, 22, 18, 15, 13,
-							11, 12, 15, 20, 18, 17, 16, 18, 23, 25 ];
+			var dataset = stopArray;
 
 			var xScale = d3.scale.ordinal()
 							.domain(d3.range(dataset.length))
-							.rangeRoundBands([0, w], 0.05);
+							.rangeRoundBands([0, w], 0.05),
 
-			var yScale = d3.scale.linear()
-							.domain([0, d3.max(dataset)])
-							.range([0, h]);
+				yScale = d3.scale.linear()
+							.domain([0, d3.max(dataset, function(d) {return d.rT})])
+							.range([0, h]),
+
+				cScale = d3.scale.linear()
+							.domain( [d3.min(dataset, function(d) {return d.rT}), d3.max(dataset, function(d) {return d.rT})] )
+							.rangeRound( [25, 50] );
 			
-			//Create SVG element
-			var svg = d3.select("body")
+			//Create SVG element for graph
+			var svg = d3.select("#graph")
 						.append("svg")
-						.attr("width", w)
-						.attr("height", h);
+						.attr({	"width": w,
+								"height": h
+							});
+			//Create SVG element for timebar			
+			var svg3 = d3.select("#timerDiv")
+						.append("svg")
+						.attr({	"width": w3,
+								"height": h3,
+								"id": "timerSVG"
+							});
 
-			//Create bars
-			svg.selectAll("rect")
-			   .data(dataset)
-			   .enter()
-			   .append("rect")
-			   .attr("x", function(d, i) {
+// colour
+function colour(d) {
+	switch (dataset){
+		case (stopArray):
+			return "hsla(353, 100%, "  + (cScale(d.rT)) + "%,1)";
+		case (goArray):
+			return "hsla(143, 90%, "  + (cScale(d.rT)) + "%,1)";
+		case (continueArray):
+			return "hsla(240, 60%, " + (cScale(d.rT)) + "%,1)";
+		default:
+			return "hsla(258, 0%, 100%, 1)";
+	}					
+}
+
+
+
+// ************************
+// *** Creating our time bar
+var timeBar = svg3.selectAll("rect")
+					.data(datasets)
+					.enter()
+					.append("rect")
+
+timeBar.attr({
+			"height": 30,
+			"width": 20,
+			"x": w3
+		});
+
+function datasets() {
+		var now = new Date;
+		return [{value: now.getSeconds()/60}];
+	};
+
+	function tick() {
+		timeBar = timeBar.each(function(d) {this._value = d.value; })
+					.data(datasets)
+					.each(function(d) {d.previousValue = this._value; });
+
+		timeBar.transition()
+			.ease("elastic")
+			.duration(400)
+			.attr({	"x": function(d) {
+						return w3 - (d.value*w3)
+					},
+					"width": function(d) {
+						return d.value * w3
+					},
+					"fill": function(d) {
+						return "hsla(" + (d.value * 500) + ",70%, 50%, 1)";
+					}
+			})
+
+		setTimeout(tick, 1000 - Date.now() % 1000)
+	}
+
+tick()
+// --- End our timebar
+// ----------------------------
+
+// *************************************\\
+// *** Function for resetting boxes *** \\
+function boxReset() {
+	that = "headme";
+	dataset = tempArray;
+	gClass = "hyphen";
+
+	var bars = svg.selectAll("rect")
+			.data(dataset, function(d) {
+		   		return d["text"];
+		   	});
+
+	d3.selectAll("g")
+		.transition()
+		.duration(1000)
+		.attr({"class": gClass})
+
+	d3.select("#textBox")
+		.select("#voteNum")
+		.transition()
+		.duration(500)
+		.text("v");					
+		
+	d3.select("#voteText")
+		.transition()
+		.duration(500)
+		.text("");
+
+	bars.enter()
+		.append("rect")
+		.attr({"x": function(d, i) {
 			   		return xScale(i);
+			   },
+			   "y": function(d) {
+			   		return h - yScale(d.rT);
+			   },
+			   "width": xScale.rangeBand(),
+			   "height": function(d) {
+			   		return yScale(d.rT);
+			   },
+			   "fill": function(d) {
+			   		return "rgb(250, 250, 250)";
+			   	}					
+			   });
+
+	bars.transition()							//Initiate a transition on all elements in the update selection (all rects)
+				.duration(1000)
+				.attr({"x": function(d, i) {
+			   		return xScale(i);
+			    },
+			    "y": function(d) {
+			   		return h - yScale(d.rT);
+			    },
+			    "width": xScale.rangeBand(),
+			    "height": function(d) {
+			   		return yScale(d.rT);
+			    },
+			    "fill": function(d) {
+			   		return "rgb(250, 250, 250)";
+			   	}
+			});
+
+	bars.exit()				//References the exit selection (a subset of the update selection)
+		.transition()		//Initiates a transition on the one element we're deleting
+		.duration(1000)
+		.attr({"y": h,
+				"fill": function(d) {
+	   				return "rgb(200, 200, 200)";
+	   			}
+	   		})	
+		.remove();
+	}
+// --- End function for resetting boxes --- \\
+// ---------------------------------------- \\
+
+// **************************************** \\
+// ******** Creating the bar graph ******** \\
+			//Create bars
+svg.selectAll("rect")
+   .data(dataset, function(d) {
+   		return d["text"]
+   	})
+   .enter()
+   .append("rect")
+   .attr({	"x": function(d, i) {
+   				return xScale(i);
+   			},
+   			"y": function(d) {
+   				return h - yScale(d.rT);
+   			},
+   			"width": xScale.rangeBand(),
+   			"height": function(d) {
+   				return yScale(d.rT);
+   			},
+   			"fill": function(d) {
+   				return colour(d)
+   			}
+   		})
+   .on("mouseover", function(d, i) {
+
+		d3.select("#textBox")
+			.select("#voteNum")
+			.text(d.rT);					
+			
+		d3.select("#voteText")
+			.text(d["text"]);
+
+		d3.select(this)
+			.transition()
+			.duration(250)
+				.attr("fill", "orange");
+			})
+   .on("mouseout", function() {
+   		d3.select(this)
+   			.transition()
+			.duration(250)
+				.attr({
+					"fill": function(d) {
+		   				return colour(d)
+		   			}
+		   	})
+  });
+			   		
+// -------- End creating bar graph -------- \\
+// ---------------------------------------- \\
+
+
+d3.selectAll(".clickables")
+	.on("click", function() {
+		if ((d3.select(this).attr("id") === that) || (d3.select(this).attr("id") ==="headme")) {
+			boxReset();
+			return false;
+		} else {
+			that = d3.select(this).attr("id");
+			console.log(that);
+			switch (that) {
+				case ("button1"):
+					dataset = stopArray;
+					gClass = "hyphenStop";
+					break;
+				case ("button2"):
+					dataset = goArray;
+					gClass = "hyphenGo";
+					break;
+				case ("button3"):
+					dataset = continueArray;
+					gClass = "hyphenContinue";
+					break;
+				default:
+					dataset = stopArray;
+					break;
+			}
+
+			d3.select("#textBox")
+						.select("#voteNum")
+						.transition()
+						.duration(500)
+						.text("v");					
+						
+					d3.select("#voteText")
+						.transition()
+						.duration(500)
+						.text("");
+			//Update scale domains
+			xScale.domain(d3.range(dataset.length));	//Recalibrate the x scale domain, given the new length of dataset
+			yScale.domain([0, d3.max(dataset, function(d) {return d.rT})]);		//Recalibrate the y scale domain, given the new max value in
+			
+			var bars = svg.selectAll("rect")			//Select all bars
+							.data(dataset, function(d) {
+						   		return d["text"];
+						   	});
+						 							//Re-bind data to existing bars, return the 'update' selection
+														//'bars' is now the update selection
+			//Enter…
+			bars.enter()								//References the enter selection (a subset of the update selection)
+				.append("rect")
+				.on("mouseover", function(d, i) {
+					d3.select("#textBox")
+						.select("#voteNum")
+						.text(d.rT);					
+					d3.select("#voteText")
+						.text(d["text"]);
+					d3.select(this)
+						.transition()
+						.duration(250)
+		  				.attr("fill", "orange");
+			    })
+			   .on("mouseout", function() {
+			   		d3.select(this)
+			   			.transition()
+						.duration(250)
+		  				.attr({
+		  					"fill": function(d) {
+				   				return colour(d)
+				   			}
+						})
+		  		})
+				.attr({
+					"y": function(d) {	
+						return h;
+					},
+					"width": xScale.rangeBand(),		//Sets the width value, based on the updated xScale
+					"height": function(d) {			//Sets the height value, based on the updated yScale
+						return yScale(d.rT);
+					},
+					"fill": function(d) {
+						return colour(d);
+					}
+				});
+
+			//Update…
+			bars.transition()							//Initiate a transition on all elements in the update selection (all rects)
+				.duration(500)
+				.attr({
+					"x": function(d, i) {				//Set new x position, based on the updated xScale
+						return xScale(i);
+					},
+					"y": function(d) {				//Set new y position, based on the updated yScale
+						return h - yScale(d.rT);
+					},
+					"width": xScale.rangeBand(),		//Set new width value, based on the updated xScale
+					"height": function(d) {			//Set new height value, based on the updated yScale
+						return yScale(d.rT);
+					},
+					"fill": function(d) {
+						console.log(colour(d))
+						return colour(d);
+					}
+				});
+
+			bars.exit()				//References the exit selection (a subset of the update selection)
+				.transition()		//Initiates a transition on the one element we're deleting
+				.duration(500)
+				// .attr("x", w)
+				.attr("y", h)		//Move past the right edge of the SVG
+				.remove();
+
+			d3.selectAll("g")
+				.transition()
+				.duration(1000)
+				.attr({"class": gClass});
+
+			svg.selectAll("text")
+			   .data(dataset, function(d) {
+			   		return d["text"]
+			   	})
+			   .transition()
+			   .duration(500)
+			   .text(function(d) {
+			   		return d["text"];
+			   })
+			   .attr("x", function(d, i) {
+					return xScale(i) + xScale.rangeBand() / 2;
 			   })
 			   .attr("y", function(d) {
-			   		return h - yScale(d);
-			   })
-			   .attr("width", xScale.rangeBand())
-			   .attr("height", function(d) {
-			   		return yScale(d);
-			   })
-			   .attr("fill", function(d) {
-					return "rgb(0, 0, " + (d * 10) + ")";
-			   })
-			   .on("mouseover", function(d) {
-
-					//Get this bar's x/y values, then augment for the tooltip
-					var xPosition = parseFloat(d3.select(this).attr("x")) + xScale.rangeBand() / 2;
-					var yPosition = parseFloat(d3.select(this).attr("y")) / 2 + h / 2;
-
-					//Update the tooltip position and value
-					d3.select("#tooltip")
-						.style("left", xPosition + "px")
-						.style("top", yPosition + "px")						
-						.select("#value")
-						.text(d);
-			   
-					//Show the tooltip
-					d3.select("#tooltip").classed("hidden", false);
-
-			   })
-			   .on("mouseout", function() {
-			   
-					//Hide the tooltip
-					d3.select("#tooltip").classed("hidden", true);
-					
+					return h - yScale(d) + 14;
 			   });
-			   // .on("click", function() {
-			   // 		sortBars();
-			   // });
-
-			// //Define sort order flag
-			// var sortOrder = false;
-			
-			// //Define sort function
-			// var sortBars = function() {
-
-			// 	//Flip value of sortOrder
-			//    	sortOrder = !sortOrder;
-
-			// 	svg.selectAll("rect")
-			// 	   .sort(function(a, b) {
-			// 	   		if (sortOrder) {
-			// 		   		return d3.ascending(a, b);
-			// 	   		} else {
-			// 		   		return d3.descending(a, b);
-			// 	   		}
-			// 	   	})
-			// 	   .transition()
-			// 	   .delay(function(d, i) {
-			// 		   return i * 50;
-			// 	   })
-			// 	   .duration(1000)
-			// 	   .attr("x", function(d, i) {
-			// 	   		return xScale(i);
-			// 	   });
-
-			// };			
-
-			d3.select("button")
-				.on("click", function() {
-
-					//Add one new value to dataset
-					var maxValue = 25;
-					var newNumber = Math.floor(Math.random() * maxValue);	//New random integer (0-24)
-					dataset.push(newNumber);			 			 		//Add new number to array
-					
-					//Update scale domains
-					xScale.domain(d3.range(dataset.length));	//Recalibrate the x scale domain, given the new length of dataset
-					yScale.domain([0, d3.max(dataset)]);		//Recalibrate the y scale domain, given the new max value in dataset
-
-					//Select…
-					var bars = svg.selectAll("rect")			//Select all bars
-						.data(dataset);							//Re-bind data to existing bars, return the 'update' selection
-																//'bars' is now the update selection
-					
-					//Enter…
-					bars.enter()								//References the enter selection (a subset of the update selection)
-						.append("rect")
-						.on("mouseover", function(d) {
-							var xPosition = parseFloat(d3.select(this).attr("x")) + xScale.rangeBand() / 2;
-							var yPosition = parseFloat(d3.select(this).attr("y")) / 2 + h / 2;
-
-					//Update the tooltip position and value
-							d3.select("#tooltip")
-								.style("left", xPosition + "px")
-								.style("top", yPosition + "px")						
-								.select("#value")
-								.text(d);
-			   
-					//Show the tooltip
-							d3.select("#tooltip").classed("hidden", false);
-
-					   })
-					   .on("mouseout", function() {
-							//Hide the tooltip
-							d3.select("#tooltip").classed("hidden", true);
-			   			})							//Creates a new rect
-						.attr("x", w)							//Sets the initial x position of the rect beyond the far right edge of the SVG
-						.attr("y", function(d) {				//Sets the y value, based on the updated yScale
-							return h - yScale(d);
-						})
-						.attr("width", xScale.rangeBand())		//Sets the width value, based on the updated xScale
-						.attr("height", function(d) {			//Sets the height value, based on the updated yScale
-							return yScale(d);
-						})
-						.attr("fill", function(d) {				//Sets the fill value
-							return "rgb(0, 0, " + (d * 10) + ")";
-						});
-
-					//Update…
-					bars.transition()							//Initiate a transition on all elements in the update selection (all rects)
-						.duration(500)
-						.attr("x", function(d, i) {				//Set new x position, based on the updated xScale
-							return xScale(i);
-						})
-						.attr("y", function(d) {				//Set new y position, based on the updated yScale
-							return h - yScale(d);
-						})
-						.attr("width", xScale.rangeBand())		//Set new width value, based on the updated xScale
-						.attr("height", function(d) {			//Set new height value, based on the updated yScale
-							return yScale(d);
-						});
-
-					//Update all labels
-					//
-					//Exercise: Modify this code to add a new label each time a new bar is added!
-					//
-					svg.selectAll("text")
-					   .data(dataset)
-					   .transition()
-					   .duration(500)
-					   .text(function(d) {
-					   		return d;
-					   })
-					   .attr("x", function(d, i) {
-							return xScale(i) + xScale.rangeBand() / 2;
-					   })
-					   .attr("y", function(d) {
-							return h - yScale(d) + 14;
-					   });
-
-				});
+			}
+		})
 		</script>
 	</body>
 </html>
