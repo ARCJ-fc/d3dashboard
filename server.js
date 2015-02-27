@@ -44,7 +44,6 @@ var http 	= require('http'),
 // -------------------------------------------
 
 
-
 // ***************************
 // *** creating twitter stream
 client.keys.stream('statuses/filter', {track: "" + twf.searchA + "," + twf.searchB + "," + twf.searchC + "" }, function (stream) {
@@ -109,6 +108,8 @@ function getFile (filePath, res, page404, mimeType) {
 
 // *****************************************
 // *** create server and listen at port 5000 
+// http.createServer(myHandler).listen(5000);
+// console.log('Server running at port 5000');
 http.createServer(myHandler).listen(myPort);
 console.log("Server running at port: " + myPort);
 console.log("Emptying arrays every " + myTimer/60000 + "minutes");
