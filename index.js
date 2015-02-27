@@ -1,4 +1,10 @@
-// //JSON Object 3 #stop #go #con
+function fetchData(){
+    function setInterval($.ajax({
+        url: "http://localhost:5000/tweets",
+        success: function(data) {
+            var sl = data.stop.length; //the stop array received from the server
+            var gl = data.go.length;
+            var cl = data.continue.length;
 
 // //fetch function -> $.getJSON 
 // //compare function -> if statment, for loop 
@@ -40,3 +46,4 @@
         }
     }), 3000)
 }
+
