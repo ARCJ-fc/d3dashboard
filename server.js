@@ -37,14 +37,16 @@ var http 	= require('http'),
 	".png" 	: "image/png",
 	".gif" 	: "image/gif",
 	".jpg" 	: "image/jpeg"
-	};
+	},
+    myPort = process.env.PORT || 5000,
+    myTimer = 1200000;
 
 // -------------------------------------------
 
 
 // ***************************
 // *** creating twitter stream
-client.keys.stream('statuses/filter', {track: 'chocolate, cake, cheese'}, function (stream) {
+client.keys.stream('statuses/filter', {track: "" + twf.searchA + "," + twf.searchB + "," + twf.searchC + "" }, function (stream) {
 	stream.on('data', twf.tweetChecker);
     stream.on("error", function() {
         
@@ -53,6 +55,18 @@ client.keys.stream('statuses/filter', {track: 'chocolate, cake, cheese'}, functi
 // --- end streaming code
 // ----------------------
 
+
+// *************************
+// *** Interval timer for resetting arrays
+setInterval(function() {
+    return twf.postWall = {
+        stopArray   : [],
+        goArray     : [],
+        contArray   : []
+    }
+}, myTimer);
+// --- End interval timer
+// ------------------------
 
 // *************************************** \\
 // *** setup server to respond to requests
@@ -96,3 +110,6 @@ function getFile (filePath, res, page404, mimeType) {
 // *** create server and listen at port 5000 
 // http.createServer(myHandler).listen(5000);
 // console.log('Server running at port 5000');
+http.createServer(myHandler).listen(myPort);
+console.log("Server running at port: " + myPort);
+console.log("Emptying arrays every " + myTimer/60000 + "minutes");

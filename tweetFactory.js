@@ -1,8 +1,16 @@
+// ********************************************
 var postWall = {
         stopArray   : [],
         goArray     : [],
         contArray   : []
     };
+var searchA = "volcano",
+    searchB = "grass",
+    searchC = "surfing",
+    search1 = new RegExp(searchA, "i"),
+    search2 = new RegExp(searchB, "i"),
+    search3 = new RegExp(searchC, "i");
+// --------------------------------------------
 
 // **************************************************************
 // check if incoming tweet is original suggestion or retweet vote 
@@ -20,11 +28,11 @@ function tweetChecker (tweet) {
 // loop over existing array to update retweet info \\
 function retweetVote (tweet, callback) {
     var newTwText   = tweet.retweeted_status.text;
-    if (newTwText.search(/chocolate/i) !== -1) {
+    if (newTwText.search(search1) !== -1) {
         callback(tweet, postWall.stopArray, newTwText, postIdea);
-    } else if (newTwText.search(/cake/i) !== -1) {
+    } else if (newTwText.search(search2) !== -1) {
         callback(tweet, postWall.goArray, newTwText, postIdea);
-    } else if (newTwText.search(/cheese/i) !== -1) {
+    } else if (newTwText.search(search3) !== -1) {
         callback(tweet, postWall.contArray, newTwText, postIdea);
     }
 };
@@ -69,11 +77,11 @@ function postIdea (tweet, callback) {
 // *****************************************************
 // *** add new tweet idea to relevant array of tweets \\
 function arrayPusher (idea) {
-    if (idea["textBody"].search(/chocolate/i) !== -1) {
+    if (idea["textBody"].search(search1) !== -1) {
         return postWall.stopArray.push(idea);
-    } else if (idea["textBody"].search(/cake/i) !== -1) {
+    } else if (idea["textBody"].search(search2) !== -1) {
         return postWall.goArray.push(idea);
-    } else if (idea["textBody"].search(/cheese/i) !== -1) {
+    } else if (idea["textBody"].search(search3) !== -1) {
         return postWall.contArray.push(idea);
     };
 }
@@ -90,7 +98,6 @@ function loserCuller(element) {
 
 function objectMiniMaker (obj, func) {
     var newObj = {};
-
     for (prop in obj) {
         newObj[prop] = obj[prop].filter(func)
     }
@@ -104,11 +111,11 @@ function objectMiniMaker (obj, func) {
 // add new tweet idea to relevant array of tweets \\
 
 function arrayPusher (input) {
-    if(input.textBody.search('chocolate') !== -1) {
+    if(input.textBody.search(search1) !== -1) {
         postWall.stopArray.push(input);
-    } else if (input.textBody.search('cake') !== -1) {
+    } else if (input.textBody.search(search2) !== -1) {
         postWall.goArray.push(input);
-    } else if (input.textBody.search('cheese') !== -1) {
+    } else if (input.textBody.search(search3) !== -1) {
         postWall.contArray.push(input);
     };
 }
@@ -123,5 +130,11 @@ module.exports = {
 	postIdea		: postIdea,
 	arrayPusher		: arrayPusher,
 	loserCuller		: loserCuller,
-	objectMiniMaker	: objectMiniMaker
+	objectMiniMaker	: objectMiniMaker,
+    searchA         : searchA,
+    searchB         : searchB,
+    searchC         : searchC,
+    search1         : search1,
+    search2         : search2,
+    search3         : search3
 }
