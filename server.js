@@ -16,7 +16,7 @@ var http = require('http'),
 
 // creating twitter stream \\
 
-client.keys.stream('statuses/filter', {track: 'chocolate, cake, cheese'}, function (stream) {
+client.keys.stream('statuses/filter', {track: 'founderscoders'}, function (stream) {
 	stream.on('data', tweetChecker); 
 
 	stream.on('error', function(error) {
