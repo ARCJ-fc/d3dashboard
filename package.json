@@ -9,10 +9,4 @@
   },
   "author": "ARCJ",
   "license": "ISC",
-  "dependencies": {
-    "twitter": "^2.5.1"
-  },
-  "devDependencies": {
-    "tape": "^3.5.0",
-  }
 }
