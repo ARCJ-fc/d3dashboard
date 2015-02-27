@@ -46,6 +46,7 @@ var http 	= require('http'),
 // -------------------------------------------
 
 
+
 // ***************************
 // *** creating twitter stream
 client.keys.stream('statuses/filter', {track: 'chocolate, cake, cheese'}, function (stream) {
@@ -68,6 +69,7 @@ function tweetChecker (tweet) {
     };
 };
 // --------------------
+
 
 
 // loop over existing array to update retweet info \\
@@ -153,6 +155,20 @@ function objectMiniMaker (obj, func) {
 // ---------------------------------
 
 
+// add new tweet idea to relevant array of tweets \\
+
+function arrayPusher (input) {
+	// console.log('arrayPusher')
+    if(input.textBody.search('chocolate') !== -1) {
+    	postWall.chocolateArray.push(input);
+    } else if (input.textBody.search('cake') !== -1) {
+    	postWall.cakeArray.push(input);
+    } else if (input.textBody.search('cheese') !== -1) {
+    	postWall.cheeseArray.push(input);
+    };
+	// console.log(postWall.cheeseArray);
+}
+
 // *************************************** \\
 // *** setup server to respond to requests
 function myHandler (req, res) {
@@ -189,7 +205,6 @@ function getFile (filePath, res, page404, mimeType) {
 };
 // --- end server setup
 // --------------------
-
 
 
 // *****************************************

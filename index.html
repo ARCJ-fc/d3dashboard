@@ -2,12 +2,11 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>D3: Adding values and elements to a chart</title>
+		<title>D3: ARC-J</title>
       <script type="text/javascript" src="/d3/d3.v3.min.js"></script>
 		<link rel="stylesheet" href="/css/bootstrap.min.css">
 		<link rel="stylesheet" href="/css/style2.css">
-		<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro' rel='stylesheet' type='text/css'>
-		</style>
+		<link href='http://fonts.googleapis.com/css?family=Poiret+One' rel='stylesheet' type='text/css'>
 	</head>
 	<body>
 	
@@ -222,7 +221,6 @@ function boxReset() {
 
 // **************************************** \\
 // ******** Creating the bar graph ******** \\
-			//Create bars
 svg.selectAll("rect")
    .data(dataset, function(d) {
    		return d["textBody"]
@@ -265,8 +263,8 @@ svg.selectAll("rect")
 					"fill": function(d) {
 		   				return colour(d)
 		   			}
-		   	})
-  });
+		   		})
+  	});
 			   		
 // -------- End creating bar graph -------- \\
 // ---------------------------------------- \\
@@ -301,7 +299,8 @@ d3.selectAll(".clickables")
 			d3.select("#textBox")
 						.select("#voteNum")
 						.transition()
-						.duration(500);				
+						.duration(500)
+						.text("");
 						
 					d3.select("#voteText")
 						.transition()
