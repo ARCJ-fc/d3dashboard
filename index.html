@@ -321,7 +321,7 @@ function updateBars() {
 	cScale.domain( [d3.min(dataset, function(d) {return d.rT}), d3.max(dataset, function(d) {return d.rT})] );
 	
 	// Selecting all the rects, rebinding data
-	console.log(dataset);
+
 	var bars = svg.selectAll("rect")		
 					.data(dataset, function(d) {
 				   		return d["textBody"];
