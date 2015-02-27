@@ -15,7 +15,7 @@ function filt(element) {
 	return element > 2;
 };
 
-test("testing that loserCuller", function(t) {
+test("testing loserCuller", function(t) {
 	t.equals(typeof twf.loserCuller(20), "boolean", "returns a Boolean value,")
 	t.equals(twf.loserCuller(20), false, "returns false if no rT property,");
 	t.equals(twf.loserCuller({rT: "4"}), true, "coerces strings into numbers");
@@ -40,7 +40,7 @@ test("testing objectMiniMaker 2", function(t) {
 });
 
 var testTweet = {
-	id: 571314470108188700,
+	 id: 571314470108188700,
      id_str: '571314470108188672',
      text: 'RT @CroftMillFabric: We\'ll have this cake please... http://t.co/bhq6ey3aVF',
      source: '<a href="http://twitter.com/download/android" rel="nofollow">Twitter for Android</a>',
@@ -52,6 +52,7 @@ var testTweet = {
         location: 'Missouri',
         url: 'http://www.ponderthatcc.com',
         description: 'The mission of PonderThat Creations and Crafts is to provide unique handcrafted jewelry and products that make people Feel Good, Look Good and Give Good!',
+    	},
      retweeted_status: 
       { created_at: 'Wed Feb 25 16:57:30 +0000 2015',
         id: 570628666201395200,
@@ -61,15 +62,38 @@ var testTweet = {
         retweet_count: 15,
         favorite_count: 18,
         retweeted: false,
+        user: {
+        	screen_name: "timothy"
+        },
      retweet_count: 0,
      favorite_count: 0,
      retweeted: false,
-     timestamp_ms: '1425046958840' } }
+     timestamp_ms: '1425046958840' }
 };
 
 test("testing retweetVote", function(t) {
-	var newTwText = testTweet.user.retweeted_status.text;
+	var newTwText = testTweet.retweeted_status.text;
 	t.equals("We\'ll have this cake please... http://t.co/bhq6ey3aVF", newTwText, "tweet text stored in variable");
 	t.notEquals(newTwText.search('cake'), -1, "text is present in the array");
 	t.end();
 });
+
+function returner(x) {
+	return x;
+};
+
+
+
+test("testing postIdea", function(t) {
+	var returnedObj = twf.postIdea(testTweet, returner);
+	t.equal(typeof returnedObj, "object", "function returns an object");
+	t.equal(typeof returnedObj.textBody, "string", "first object property is a string");
+	t.equal(typeof returnedObj.id, "number", "second object property is a number");
+	t.equal(typeof twf.postIdea(testTweet, returner), "number", "third object property is a number");
+	t.equal(typeof returnedObj.voterName, "string", "fourth object property is a string");
+	t.equal(typeof returnedObj.voters, "object", "fifth object property is an object");
+	console.log(testTweet.retweeted_status);
+	t.end();
+})
+
+
