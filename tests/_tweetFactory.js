@@ -5,7 +5,11 @@ var testObj = {
 	prop1: [0, 1, 2, 3, 4, 5, 10]
 };
 
-var testObj2 = twf.postWall;
+var testObj2 = {
+	stopArray	: [{}],
+	goArray		: [{}],
+	contArray	: [{}]
+}
 
 function filt(element) {
 	return element > 2;
@@ -28,9 +32,9 @@ test("testing objectMiniMaker 1", function(t) {
 });
 
 test("testing objectMiniMaker 2", function(t) {
-	t.equals(twf.objectMiniMaker(testObj2, twf.loserCuller).stopArray.length, 1, "correctly culls array1");
-	t.equals(twf.objectMiniMaker(testObj2, twf.loserCuller).goArray.length, 3, "correctly culls array2");
-	t.equals(twf.objectMiniMaker(testObj2, twf.loserCuller).contArray.length, 3, "correctly culls array3");
+	t.equals(twf.objectMiniMaker(testObj2, twf.loserCuller).stopArray.length, 0, "correctly culls array1");
+	t.equals(twf.objectMiniMaker(testObj2, twf.loserCuller).goArray.length, 0, "correctly culls array2");
+	t.equals(twf.objectMiniMaker(testObj2, twf.loserCuller).contArray.length, 0, "correctly culls array3");
 	t.deepEquals(twf.objectMiniMaker(testObj, filt).prop1, [3, 4, 5, 10], 'and is correctly filtered');
 	t.end();
 });

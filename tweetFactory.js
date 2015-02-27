@@ -10,7 +10,7 @@ function tweetChecker (tweet) {
     if(tweet.retweeted_status === undefined) {
         postIdea(tweet, arrayPusher);
     } else {
-        retweetVote(tweet);
+        retweetVote(tweet, searchTweets);
     };
 };
 // --------------------
@@ -18,20 +18,21 @@ function tweetChecker (tweet) {
 
 
 // loop over existing array to update retweet info \\
-function retweetVote (tweet) {
+function retweetVote (tweet, callback) {
     var newTwText   = tweet.retweeted_status.text;
     if (newTwText.search(/chocolate/i) !== -1) {
-        searchTweets(tweet, postWall.stopArray, newTwText);
+        callback(tweet, postWall.stopArray, newTwText, postIdea);
     } else if (newTwText.search(/cake/i) !== -1) {
-        searchTweets(tweet, postWall.goArray, newTwText);
+        callback(tweet, postWall.goArray, newTwText, postIdea);
     } else if (newTwText.search(/cheese/i) !== -1) {
-        searchTweets(tweet, postWall.contArray, newTwText);
+        callback(tweet, postWall.contArray, newTwText, postIdea);
     }
 };
 
 // needs fixing
-function searchTweets(tweet, array, str) {
+function searchTweets(tweet, array, str, callback) {
     var x = 0;
+    console.log(str);
     array.forEach(function(element) {
         if (element["textBody"].search(str) !== -1) {
             element.rT = tweet.retweeted_status.retweet_count;
@@ -40,7 +41,7 @@ function searchTweets(tweet, array, str) {
     });
 
     if (x === 0) {
-        postIdea(tweet, arrayPusher)
+        callback(tweet, arrayPusher)
     }
 }
 
