@@ -144,6 +144,7 @@ tick()
 // --- End our timebar
 // ----------------------------
 
+
 // *************************************\\
 // *** Function for resetting boxes *** \\
 function boxReset() {
@@ -297,19 +298,19 @@ d3.selectAll(".clickables")
 			}
 			// Emptying the textbox on graph switch
 			d3.select("#textBox")
-						.select("#voteNum")
-						.transition()
-						.duration(500)
-						.text("");
+				.select("#voteNum")
+				.transition()
+				.duration(500)
+				.text("");
 						
-					d3.select("#voteText")
-						.transition()
-						.duration(500)
-						.text("");
+			d3.select("#voteText")
+				.transition()
+				.duration(500)
+				.text("");
 
 			updateBars()
 		}
-	})
+})
 
 
 
@@ -346,7 +347,7 @@ function updateBars() {
 				.duration(250)
   				.attr({
   					"fill": function(d) {
-		   				return colour(d)
+		   				return colour(d);
 		   			}
 				})
   		})
@@ -413,6 +414,7 @@ function updateBars() {
 }
 // ---------------------------------
 
+
 // *********************************
 // **** Making the ajax calls
 var fetchData = function(){
@@ -424,12 +426,28 @@ var fetchData = function(){
             stopArray = temp.stopArray;
             goArray = temp.goArray;
             contArray = temp.contArray;
-            
+
             console.log("update!");
+
+            switch (that) {
+				case ("button1"):
+					dataset = stopArray;
+					break;
+				case ("button2"):
+					dataset = goArray;
+					break;
+				case ("button3"):
+					dataset = contArray;
+					break;
+				default:
+					dataset = stopArray;
+					break;
+			}
+
       		updateBars();
         }
     })
-    setTimeout(fetchData, 10000);	
+    setTimeout(fetchData, 5000);	
 };
 
 fetchData();
