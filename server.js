@@ -96,8 +96,3 @@ function getFile (filePath, res, page404, mimeType) {
 // *** create server and listen at port 5000 
 // http.createServer(myHandler).listen(5000);
 // console.log('Server running at port 5000');
-
-
-module.exports = {
-	postIdea: postIdea
-};
