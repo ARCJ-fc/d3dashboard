@@ -1,5 +1,5 @@
 body {
-    font-family: 'Source Sans Pro', sans-serif;
+    font-family: 'Poiret One', cursive;
 }
 
 .btn-toolbar {
@@ -45,7 +45,7 @@ body {
     border-width: 2px;*/
     border-color: black;
     border-radius: 10px;
-    background-color: hsla(84, 0%, 95%, 1)
+    background-color: hsla(84, 0%, 95%, 1);
     height: 78px;
 }
 
