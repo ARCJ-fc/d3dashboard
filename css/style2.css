@@ -11,6 +11,11 @@ body {
         display:inline-block;
         margin-left: 0px;
 }
+
+#voteHolder {
+    height: 53px;
+}
+
 #votebox {
         float: right;
 }
@@ -46,7 +51,7 @@ body {
     border-color: black;
     border-radius: 10px;
     background-color: hsla(84, 0%, 95%, 1);
-    height: 78px;
+    height: 90px;
 }
 
 #graph {

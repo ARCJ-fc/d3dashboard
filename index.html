@@ -23,7 +23,7 @@
 	<div class="col-md-6 col-md-offset-3">
 		<div id="graph"></div>
 		<div id="textBox">
-			<div class="textuality" ><img src="/assets/twitter-48-black.png"><h2 id="voteNum"></h1></div>
+			<div class="textuality" id="voteHolder" ><h2 id="voteNum"></h2><img src="/assets/twitter-48-black.png"></div>
 			<h4 class="textuality" id="voteText"></h4>
 			</div>
 		</div>
@@ -274,6 +274,7 @@ svg.selectAll("rect")
 d3.selectAll(".clickables")
 	.on("click", function() {
 		if ((d3.select(this).attr("id") === that) || (d3.select(this).attr("id") ==="headme")) {
+			that = "headme"
 			boxReset();
 			return false;
 		} else {
@@ -293,7 +294,7 @@ d3.selectAll(".clickables")
 					gClass = "hyphenContinue";
 					break;
 				default:
-					dataset = stopArray;
+					dataset = tempArray;
 					break;
 			}
 			// Emptying the textbox on graph switch
@@ -419,7 +420,8 @@ function updateBars() {
 // **** Making the ajax calls
 var fetchData = function(){
 	$.ajax({
-        url: "http://localhost:5000/tweets",
+        // url: "http://localhost:5000/tweets",
+        url: "https://stop-go-continue.herokuapp.com/tweets",
         success: function(data) {
             var temp = JSON.parse(data);
 
