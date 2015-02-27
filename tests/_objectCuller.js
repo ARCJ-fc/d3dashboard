@@ -1,8 +1,37 @@
 var test = require("tape"),
-	app = require("../objectCuller");
+	app = require("../objectCuller"),
+	server = require("../server");
 
 var testObj = {
 	prop1: [0, 1, 2, 3, 4, 5, 10]
+};
+
+var testTweet = {
+	id: 571314470108188700,
+     id_str: '571314470108188672',
+     text: 'RT @CroftMillFabric: We\'ll have this cake please... http://t.co/bhq6ey3aVF',
+     source: '<a href="http://twitter.com/download/android" rel="nofollow">Twitter for Android</a>',
+     user: 
+      { id: 2991209993,
+        id_str: '2991209993',
+        name: 'PonderThatCreations',
+        screen_name: 'ponderthatcc',
+        location: 'Missouri',
+        url: 'http://www.ponderthatcc.com',
+        description: 'The mission of PonderThat Creations and Crafts is to provide unique handcrafted jewelry and products that make people Feel Good, Look Good and Give Good!',
+     retweeted_status: 
+      { created_at: 'Wed Feb 25 16:57:30 +0000 2015',
+        id: 570628666201395200,
+        id_str: '570628666201395200',
+        text: 'We\'ll have this cake please... http://t.co/bhq6ey3aVF',
+        source: '<a href="http://twitter.com" rel="nofollow">Twitter Web Client</a>',
+        retweet_count: 15,
+        favorite_count: 18,
+        retweeted: false,
+     retweet_count: 0,
+     favorite_count: 0,
+     retweeted: false,
+     timestamp_ms: '1425046958840' } }
 };
 
 var testObj2 = app.postWall;
@@ -31,6 +60,31 @@ test("testing objectMiniMaker 2", function(t) {
 	t.equals(app.objectMiniMaker(testObj2, app.loserCuller).stopArray.length, 1, "correctly culls array1");
 	t.equals(app.objectMiniMaker(testObj2, app.loserCuller).goArray.length, 3, "correctly culls array2");
 	t.equals(app.objectMiniMaker(testObj2, app.loserCuller).continueArray.length, 3, "correctly culls array3");
-	// t.deepEquals(app.objectMiniMaker(testObj, filt).prop1, [3, 4, 5, 10], 'and is correctly filtered');
+	t.deepEquals(app.objectMiniMaker(testObj, filt).prop1, [3, 4, 5, 10], 'and is correctly filtered');
 	t.end();
 });
+
+test("testing retweetVote", function(t) {
+	var newTwText = testTweet.user.retweeted_status.text;
+	t.equals("We\'ll have this cake please... http://t.co/bhq6ey3aVF", newTwText, "tweet text stored in variable");
+	t.notEquals(newTwText.search('cake'), -1, "text is present in the array");
+	t.end();
+});
+
+function returner(x){
+	return x;
+}
+
+// test("testing postIdea", function(t) {
+// 	t.equals(typeof server.postIdea(testTweet, returner), 'object', "function returns an object");
+// 	t.end();
+// })
+
+
+
+
+
+
+
+
+
