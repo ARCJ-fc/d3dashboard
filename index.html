@@ -24,60 +24,28 @@
 	<div class="col-md-6 col-md-offset-3">
 		<div id="graph"></div>
 		<div id="textBox">
-			<div class="textuality" ><h1 id="voteNum"></h1><img src="/assets/twitter-48-black.png"></div>
-			<h2 class="textuality" id="voteText"></h2>
+			<div class="textuality" ><img src="/assets/twitter-48-black.png"><h2 id="voteNum"></h1></div>
+			<h4 class="textuality" id="voteText"></h4>
 			</div>
 		</div>
+<script src="/js/jquery.min.js"></script>
 		<script type="text/javascript">
 
-			var stopArray = 	[ 	{"text": "this is a random tweet",
-									"rT": 4},
-									{"text": "uh oh not another one!",
-									"rT": 5},
-									{"text": "every tweet is a fish",
-									"rT": 6},
-									{"text": "every fish is a tweet",
-									"rT": 7},
-									{"text": "twitter",
-									"rT": 9},
-									{"text": "twitttter",
-									"rT": 12} ],
-
-				goArray 		= [ {"text": "hello world",
-									"rT": 20},
-									{"text": "lorem ipsum dolor",
-									"rT": 12},
-									{"text": "blah blah blah",
-									"rT": 6},
-									{"text": "bieber fever",
-									"rT": 8}
-											 ],
-
-				continueArray 	= [ {"text": "fever fever",
-									"rT": 4},
-									{"text": "never gonna give you up",
-									"rT": 5},
-									{"text": "m",
-									"rT": 6},
-									{"text": "n",
-									"rT": 7},
-									{"text": "o",
-									"rT": 9},
-									{"text": "p",
-									"rT": 12} ],
-
-				tempArray = 	[ 	{"text": "",
+			var tempArray = 	[ 	{"textBody": "",
 									"rT": 0},
-									{"text": " ",
+									{"textBody": " ",
 									"rT": 0},
-									{"text": "  ",
+									{"textBody": "  ",
 									"rT": 0},
-									{"text": "   ",
+									{"textBody": "   ",
 									"rT": 0},
-									{"text": "    ",
+									{"textBody": "    ",
 									"rT": 0},
-									{"text": "     ",
-									"rT": 0} ];
+									{"textBody": "     ",
+									"rT": 0} ],
+				stopArray,
+				goArray,
+				contArray;
 
 			var w = 600,
 				h = 350,
@@ -89,7 +57,7 @@
 				that = "headme",
 				gClass = "hyphen";
 			
-			var dataset = stopArray;
+			var dataset = tempArray;
 
 			var xScale = d3.scale.ordinal()
 							.domain(d3.range(dataset.length))
@@ -97,7 +65,7 @@
 
 				yScale = d3.scale.linear()
 							.domain([0, d3.max(dataset, function(d) {return d.rT})])
-							.range([0, h]),
+							.range([50, h]),
 
 				cScale = d3.scale.linear()
 							.domain( [d3.min(dataset, function(d) {return d.rT}), d3.max(dataset, function(d) {return d.rT})] )
@@ -124,7 +92,7 @@ function colour(d) {
 			return "hsla(353, 100%, "  + (cScale(d.rT)) + "%,1)";
 		case (goArray):
 			return "hsla(143, 90%, "  + (cScale(d.rT)) + "%,1)";
-		case (continueArray):
+		case (contArray):
 			return "hsla(240, 60%, " + (cScale(d.rT)) + "%,1)";
 		default:
 			return "hsla(258, 0%, 100%, 1)";
@@ -186,7 +154,7 @@ function boxReset() {
 
 	var bars = svg.selectAll("rect")
 			.data(dataset, function(d) {
-		   		return d["text"];
+		   		return d["textBody"];
 		   	});
 
 	d3.selectAll("g")
@@ -198,7 +166,7 @@ function boxReset() {
 		.select("#voteNum")
 		.transition()
 		.duration(500)
-		.text("v");					
+		.text("");					
 		
 	d3.select("#voteText")
 		.transition()
@@ -257,7 +225,7 @@ function boxReset() {
 			//Create bars
 svg.selectAll("rect")
    .data(dataset, function(d) {
-   		return d["text"]
+   		return d["textBody"]
    	})
    .enter()
    .append("rect")
@@ -282,7 +250,7 @@ svg.selectAll("rect")
 			.text(d.rT);					
 			
 		d3.select("#voteText")
-			.text(d["text"]);
+			.text(d["textBody"]);
 
 		d3.select(this)
 			.transition()
@@ -322,120 +290,150 @@ d3.selectAll(".clickables")
 					gClass = "hyphenGo";
 					break;
 				case ("button3"):
-					dataset = continueArray;
+					dataset = contArray;
 					gClass = "hyphenContinue";
 					break;
 				default:
 					dataset = stopArray;
 					break;
 			}
-
+			// Emptying the textbox on graph switch
 			d3.select("#textBox")
 						.select("#voteNum")
 						.transition()
-						.duration(500)
-						.text("v");					
+						.duration(500);				
 						
 					d3.select("#voteText")
 						.transition()
 						.duration(500)
 						.text("");
-			//Update scale domains
-			xScale.domain(d3.range(dataset.length));	//Recalibrate the x scale domain, given the new length of dataset
-			yScale.domain([0, d3.max(dataset, function(d) {return d.rT})]);		//Recalibrate the y scale domain, given the new max value in
-			
-			var bars = svg.selectAll("rect")			//Select all bars
-							.data(dataset, function(d) {
-						   		return d["text"];
-						   	});
-						 							//Re-bind data to existing bars, return the 'update' selection
-														//'bars' is now the update selection
-			//Enter…
-			bars.enter()								//References the enter selection (a subset of the update selection)
-				.append("rect")
-				.on("mouseover", function(d, i) {
-					d3.select("#textBox")
-						.select("#voteNum")
-						.text(d.rT);					
-					d3.select("#voteText")
-						.text(d["text"]);
-					d3.select(this)
-						.transition()
-						.duration(250)
-		  				.attr("fill", "orange");
-			    })
-			   .on("mouseout", function() {
-			   		d3.select(this)
-			   			.transition()
-						.duration(250)
-		  				.attr({
-		  					"fill": function(d) {
-				   				return colour(d)
-				   			}
-						})
-		  		})
-				.attr({
-					"y": function(d) {	
-						return h;
-					},
-					"width": xScale.rangeBand(),		//Sets the width value, based on the updated xScale
-					"height": function(d) {			//Sets the height value, based on the updated yScale
-						return yScale(d.rT);
-					},
-					"fill": function(d) {
-						return colour(d);
-					}
-				});
 
-			//Update…
-			bars.transition()							//Initiate a transition on all elements in the update selection (all rects)
-				.duration(500)
-				.attr({
-					"x": function(d, i) {				//Set new x position, based on the updated xScale
-						return xScale(i);
-					},
-					"y": function(d) {				//Set new y position, based on the updated yScale
-						return h - yScale(d.rT);
-					},
-					"width": xScale.rangeBand(),		//Set new width value, based on the updated xScale
-					"height": function(d) {			//Set new height value, based on the updated yScale
-						return yScale(d.rT);
-					},
-					"fill": function(d) {
-						console.log(colour(d))
-						return colour(d);
-					}
-				});
+			updateBars()
+		}
+	})
 
-			bars.exit()				//References the exit selection (a subset of the update selection)
-				.transition()		//Initiates a transition on the one element we're deleting
-				.duration(500)
-				// .attr("x", w)
-				.attr("y", h)		//Move past the right edge of the SVG
-				.remove();
 
-			d3.selectAll("g")
+
+function updateBars() {
+	// Updating scale domains to account for new values
+	xScale.domain(d3.range(dataset.length));	
+	yScale.domain([0, d3.max(dataset, function(d) {return d.rT})]);
+	cScale.domain( [d3.min(dataset, function(d) {return d.rT}), d3.max(dataset, function(d) {return d.rT})] );
+	
+	// Selecting all the rects, rebinding data
+	console.log(dataset);
+	var bars = svg.selectAll("rect")		
+					.data(dataset, function(d) {
+				   		return d["textBody"];
+				   	});
+				 						
+	// The enter selection
+	bars.enter()			
+		.append("rect")
+		.on("mouseover", function(d, i) {
+			d3.select("#textBox")
+				.select("#voteNum")
+				.text(d.rT);					
+			d3.select("#voteText")
+				.text(d["textBody"]);
+			d3.select(this)
 				.transition()
-				.duration(1000)
-				.attr({"class": gClass});
-
-			svg.selectAll("text")
-			   .data(dataset, function(d) {
-			   		return d["text"]
-			   	})
-			   .transition()
-			   .duration(500)
-			   .text(function(d) {
-			   		return d["text"];
-			   })
-			   .attr("x", function(d, i) {
-					return xScale(i) + xScale.rangeBand() / 2;
-			   })
-			   .attr("y", function(d) {
-					return h - yScale(d) + 14;
-			   });
+				.duration(250)
+  				.attr("fill", "orange");
+	    })
+	   .on("mouseout", function() {
+	   		d3.select(this)
+	   			.transition()
+				.duration(250)
+  				.attr({
+  					"fill": function(d) {
+		   				return colour(d)
+		   			}
+				})
+  		})
+		.attr({
+			"y": function(d) {	
+				return h;
+			},
+			"width": xScale.rangeBand(),		//Sets the width value, based on the updated xScale
+			"height": function(d) {			//Sets the height value, based on the updated yScale
+				return yScale(d.rT);
+			},
+			"fill": function(d) {
+				return colour(d);
 			}
-		})
+		});
+
+	//Update…
+	bars.transition()							//Initiate a transition on all elements in the update selection (all rects)
+		.duration(500)
+		.attr({
+			"x": function(d, i) {				//Set new x position, based on the updated xScale
+				return xScale(i);
+			},
+			"y": function(d) {				//Set new y position, based on the updated yScale
+				return h - yScale(d.rT);
+			},
+			"width": xScale.rangeBand(),		//Set new width value, based on the updated xScale
+			"height": function(d) {			//Set new height value, based on the updated yScale
+				return yScale(d.rT);
+			},
+			"fill": function(d) {
+				console.log(colour(d))
+				return colour(d);
+			}
+		});
+
+	bars.exit()				//References the exit selection (a subset of the update selection)
+		.transition()		//Initiates a transition on the one element we're deleting
+		.duration(500)
+		// .attr("x", w)
+		.attr("y", h)		//Move past the right edge of the SVG
+		.remove();
+
+	d3.selectAll("g")
+		.transition()
+		.duration(1000)
+		.attr({"class": gClass});
+
+	svg.selectAll("text")
+	   .data(dataset, function(d) {
+	   		return d["textBody"]
+	   	})
+	   .transition()
+	   .duration(500)
+	   .text(function(d) {
+	   		return d["textBody"];
+	   })
+	   .attr("x", function(d, i) {
+			return xScale(i) + xScale.rangeBand() / 2;
+	   })
+	   .attr("y", function(d) {
+			return h - yScale(d) + 14;
+	   });
+}
+// ---------------------------------
+
+// *********************************
+// **** Making the ajax calls
+var fetchData = function(){
+	$.ajax({
+        url: "http://localhost:5000/tweets",
+        success: function(data) {
+            var temp = JSON.parse(data);
+
+            stopArray = temp.stopArray;
+            goArray = temp.goArray;
+            contArray = temp.contArray;
+            
+            console.log("update!");
+      		updateBars();
+        }
+    })
+    setTimeout(fetchData, 10000);	
+};
+
+fetchData();
 
 		</script>
 	</body>

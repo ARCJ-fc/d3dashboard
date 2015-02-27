@@ -46,6 +46,7 @@ body {
     border-color: black;
     border-radius: 10px;
     background-color: hsla(84, 0%, 95%, 1)
+    height: 78px;
 }
 
 #graph {
@@ -87,6 +88,11 @@ h2#headme:hover {
 
 #timerSVG>rect:hover {
     fill: orange;
+}
+
+#voteText {
+    margin-top: 0px;
+    margin-bottom: 0px;
 }
 
 .hyphen {
