@@ -419,7 +419,8 @@ function updateBars() {
 // **** Making the ajax calls
 var fetchData = function(){
 	$.ajax({
-        url: "http://localhost:5000/tweets",
+        // url: "http://localhost:5000/tweets",
+        url: "https://stop-go-continue.herokuapp.com/tweets",
         success: function(data) {
             var temp = JSON.parse(data);
 
